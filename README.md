@@ -1,3 +1,5 @@
+:warning: **This is still untested and in development**
+
 # FauxSharp
 
 FauxSharp is a simple C# SDK for communicating with FauxApi on PFSense
@@ -7,7 +9,7 @@ FauxSharp is a simple C# SDK for communicating with FauxApi on PFSense
 Use Nuget to install FauxApi Sdk.
 
 ```bash
-Install-Package Portamedia.FauxApi
+Install-Package FauxApi
 ```
 
 ## Usage
