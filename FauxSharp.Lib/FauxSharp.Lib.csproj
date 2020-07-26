@@ -6,6 +6,7 @@
     <Description>SDK for FauxApi for PFSense</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageId>Portamedia.FauxSharp</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
