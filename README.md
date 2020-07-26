@@ -16,7 +16,7 @@ Install-Package FauxApi (not yet published)
 FauxSharp can be easily used with dependency injection in Asp.net core. Just setup the services like so:
 ```csharp
 services.AddSingleton<IApiBaseService>(x => new ApiBaseService(new ClientBaseOptions("https://pfsense_fauxapi_host","apikey","apisecret",false,true)));
-            services.AddSingleton<IApiService, ApiService>();
+services.AddSingleton<IApiService, ApiService>();
 ```
 The ApiBaseService can also be created without the CLientBaseOptions and you can configure it later, see further down.
 You can then inject the service in your own services etc. and call it:
