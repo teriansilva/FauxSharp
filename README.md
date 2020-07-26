@@ -1,4 +1,4 @@
-:warning: **This is still untested and in development**
+:warning: **This is still not entirely tested and under development, some things may not work**
 
 # FauxSharp
 
