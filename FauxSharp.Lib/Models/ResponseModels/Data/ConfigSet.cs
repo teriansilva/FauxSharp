@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace FauxSharp.Models.ResponseModels.Data
+namespace FauxSharp.Lib.Models.ResponseModels.Data
 {
     public class ConfigSet
     {

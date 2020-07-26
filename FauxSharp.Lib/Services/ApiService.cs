@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FauxSharp.Constants;
-using FauxSharp.Models.ResponseModels;
+using FauxSharp.Lib.Models.ResponseModels;
 
 namespace FauxSharp.Services
 {

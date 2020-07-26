@@ -7,8 +7,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using FauxSharp.Models;
-using FauxSharp.Models.ResponseModels;
+using FauxSharp.Lib.Models;
+using FauxSharp.Lib.Models.ResponseModels;
 using Newtonsoft.Json;
 
 namespace FauxSharp.Services
@@ -24,14 +24,31 @@ namespace FauxSharp.Services
         /// <param name="arguments"></param>
         /// <returns></returns>
         Task<ApiResponseRoot> ApiRequest(string method, string apiAction, string bodyData = "", IDictionary<string, string> arguments = null);
+
+        /// <summary>
+        /// Allows to update the base request configuration of the service
+        /// </summary>
+        /// <param name="clientBaseOptions"></param>
+        void UpdateConfiguration(ClientBaseOptions clientBaseOptions);
     }
 
     public class ApiBaseService : IApiBaseService
     {
 
-        private readonly ClientBaseOptions _clientBaseOptions;
+        private ClientBaseOptions _clientBaseOptions;
         private readonly string ApiVersion = "v1";
+
+        public ApiBaseService()
+        {
+        }
+
         public ApiBaseService(ClientBaseOptions clientBaseOptions)
+        {
+            _clientBaseOptions = clientBaseOptions;
+        }
+
+        /// <inheritdoc />
+        public void UpdateConfiguration(ClientBaseOptions clientBaseOptions)
         {
             _clientBaseOptions = clientBaseOptions;
         }
@@ -39,7 +56,13 @@ namespace FauxSharp.Services
         /// <inheritdoc />
         public async Task<ApiResponseRoot> ApiRequest(string method, string apiAction, string bodyData = "", IDictionary<string, string> arguments = null)
         {
-            var client = new HttpClient();
+
+            var handler = new HttpClientHandler()
+            {
+                ServerCertificateCustomValidationCallback = _clientBaseOptions.Insecure ? HttpClientHandler.DangerousAcceptAnyServerCertificateValidator : null
+            };
+
+            var client = new HttpClient(handler);
 
             client.BaseAddress = new Uri("https://api.github.com");
             client.DefaultRequestHeaders.Add("User-Agent", "Server");
@@ -98,7 +121,7 @@ namespace FauxSharp.Services
         }
         private string GenerateAuth()
         {
-            var timestamp = DateTime.Now;
+            var timestamp = DateTime.UtcNow.ToString("yyyyMMddZHHmmss");
             var nonce = GenerateRandomString(8);
             var hash = ComputeSha256Hash(_clientBaseOptions.ApiSecret + timestamp + nonce);
             return $"{_clientBaseOptions.ApiKey}:{timestamp}:{nonce}:{hash}";
@@ -110,9 +133,15 @@ namespace FauxSharp.Services
             {
                 arguments.Add(new KeyValuePair<string, string>("__debug", _clientBaseOptions.Debug.ToString().ToLower()));
             }
-            return _clientBaseOptions.Uri +
-                   $"/fauxapi/{ApiVersion}/?" +
-                   $"{HttpUtility.UrlEncode(string.Join("&", arguments.Select(x => $"{x.Key}={x.Value}")))}";
+
+            var uri = _clientBaseOptions.Uri + $"/fauxapi/{ApiVersion}/?action={action}";
+
+            if (arguments != null && arguments.Any())
+            {
+                uri += $"&{HttpUtility.UrlEncode(string.Join("&", arguments.Select(x => $"{x.Key}={x.Value}")))}";
+            }
+
+            return uri;
         }
 
         #endregion

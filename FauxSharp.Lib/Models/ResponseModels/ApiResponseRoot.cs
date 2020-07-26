@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace FauxSharp.Models.ResponseModels
+namespace FauxSharp.Lib.Models.ResponseModels
 {
     public class ApiResponseRoot {
 

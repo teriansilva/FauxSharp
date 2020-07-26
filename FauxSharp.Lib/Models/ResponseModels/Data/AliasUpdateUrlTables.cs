@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace FauxSharp.Models.ResponseModels.Data
+namespace FauxSharp.Lib.Models.ResponseModels.Data
 {
     public class Bruteforceblocker
     {
