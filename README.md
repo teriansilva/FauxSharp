@@ -8,7 +8,7 @@ FauxSharp is a simple C# SDK for communicating with FauxApi on PFSense
 
 Use Nuget to install FauxApi Sdk.
 
-```bash
+```powershell
 Install-Package FauxApi
 ```
 
