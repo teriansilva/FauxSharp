@@ -2,10 +2,11 @@
 using System.Threading.Tasks;
 using FauxSharp.Constants;
 using FauxSharp.Lib.Models.ResponseModels;
+using FauxSharp.Lib.Models.ResponseModels.Data;
 
 namespace FauxSharp.Services
 {
-     public interface IApiService
+    public interface IApiService
     {
         /// <summary>
         /// Causes the pfSense host to immediately update any urltable alias entries from their (remote) source URLs.
@@ -13,20 +14,20 @@ namespace FauxSharp.Services
         /// </summary>
         /// <param name="arguments">table (optional, default = null)</param>
         /// <returns></returns>
-        Task<ApiResponseRoot> AliasUpdateUrlTables(IDictionary<string, string> arguments = null);
+        Task<ApiResponseData<AliasUpdateUrlTables>> AliasUpdateUrlTables(IDictionary<string, string> arguments = null);
 
         /// <summary>
         /// Causes the system to take a configuration backup and add it to the regular set of pfSense system backups at
         /// /cf/conf/backup/
         /// </summary>
         /// <returns></returns>
-        Task<ApiResponseRoot> ConfigBackup();
+        Task<ApiResponseData<ConfigBackup>> ConfigBackup();
 
         /// <summary>
         /// Returns a list of the currently available pfSense system configuration backups.
         /// </summary>
         /// <returns></returns>
-        Task<ApiResponseRoot> ConfigBackupList();
+        Task<ApiResponseData<ConfigBackupList>> ConfigBackupList();
 
         /// <summary>
         /// Returns the system configuration as a JSON formatted string. Additionally, using the optional config_file
@@ -35,7 +36,7 @@ namespace FauxSharp.Services
         /// </summary>
         /// <param name="arguments">config_file (optional, default=/cf/config/config.xml)</param>
         /// <returns></returns>
-        Task<ApiResponseRoot> ConfigGet(IDictionary<string, string> arguments = null);
+        Task<ApiResponseData<ConfigGet>> ConfigGet(IDictionary<string, string> arguments = null);
 
         /// <summary>
         /// Allows the API user to patch the system configuration with the existing system config
@@ -45,21 +46,21 @@ namespace FauxSharp.Services
         /// <param name="bodyData"></param>
         /// <param name="arguments">do_backup (optional, default = true), do_reload (optional, default = true)</param>
         /// <returns></returns>
-        Task<ApiResponseRoot> ConfigPatch(string bodyData = "[]", IDictionary<string, string> arguments = null);
+        Task<ApiResponseData<ConfigPatch>> ConfigPatch(string bodyData = "[]", IDictionary<string, string> arguments = null);
 
         /// <summary>
         /// Causes the pfSense system to perform a reload action of the config.xml file, by default this happens when the
         /// config_set action occurs hence there is normally no need to explicitly call this after a config_set action.
         /// </summary>
         /// <returns></returns>
-        Task<ApiResponseRoot> ConfigReload();
+        Task<ApiResponse> ConfigReload();
 
         /// <summary>
         /// Restores the pfSense system to the named backup configuration.
         /// </summary>
         /// <param name="arguments">config_file (required, full path to the backup file to restore)</param>
         /// <returns></returns>
-        Task<ApiResponseRoot> ConfigRestore(IDictionary<string, string> arguments = null);
+        Task<ApiResponseData<ConfigRestore>> ConfigRestore(IDictionary<string, string> arguments = null);
 
         /// <summary>
         /// ets a full system configuration and (by default) takes a system config backup and (by default) causes the system
@@ -72,7 +73,7 @@ namespace FauxSharp.Services
         /// <param name="bodyData"></param>
         /// <param name="arguments">do_backup (optional, default = true) do_reload (optional, default = true)</param>
         /// <returns></returns>
-        Task<ApiResponseRoot> ConfigSet(string bodyData = "[]", IDictionary<string, string> arguments = null);
+        Task<ApiResponseData<ConfigSet>> ConfigSet(string bodyData = "[]", IDictionary<string, string> arguments = null);
 
         /// <summary>
         /// Call directly a pfSense PHP function with API user supplied parameters. Note that is action is a VERY raw
@@ -85,13 +86,13 @@ namespace FauxSharp.Services
         /// </summary>
         /// <param name="bodyData"></param>
         /// <returns></returns>
-        Task<ApiResponseRoot> FunctionCall(string bodyData);
+        Task<ApiResponseData<FunctionCall>> FunctionCall(string bodyData);
 
         /// <summary>
         /// Returns gateway status data.
         /// </summary>
         /// <returns></returns>
-        Task<ApiResponseRoot> GatewayStatus();
+        Task<ApiResponseData<GatewayStatus>> GatewayStatus();
 
         /// <summary>
         /// Returns interface statistics data and information - the real interface name must be provided not an alias of the
@@ -99,7 +100,7 @@ namespace FauxSharp.Services
         /// </summary>
         /// <param name="arguments">interface (required)</param>
         /// <returns></returns>
-        Task<ApiResponseRoot> InterfaceStats(IDictionary<string, string> arguments);
+        Task<ApiResponseData<InterfaceStats>> InterfaceStats(IDictionary<string, string> arguments);
 
         /// <summary>
         /// Returns the numbered list of loaded pf rules from a pfctl -sr -vv command on the pfSense host. An empty
@@ -107,7 +108,7 @@ namespace FauxSharp.Services
         /// </summary>
         /// <param name="arguments">rule_number (optional, default = null)</param>
         /// <returns></returns>
-        Task<ApiResponseRoot> RuleGet(IDictionary<string, string> arguments = null);
+        Task<ApiResponseData<RuleGet>> RuleGet(IDictionary<string, string> arguments = null);
 
         /// <summary>
         /// Performs a pfSense "send_event" command to cause various pfSense system actions as is also available through the
@@ -118,19 +119,19 @@ namespace FauxSharp.Services
         /// </summary>
         /// <param name="bodyData"></param>
         /// <returns></returns>
-        Task<ApiResponseRoot> SendEvent(string bodyData);
+        Task<ApiResponse> SendEvent(string bodyData);
 
         /// <summary>
         /// Reboots the system.
         /// </summary>
         /// <returns></returns>
-        Task<ApiResponseRoot> SystemReboot();
+        Task<ApiResponse> SystemReboot();
 
         /// <summary>
         /// Returns various useful system stats.
         /// </summary>
         /// <returns></returns>
-        Task<ApiResponseRoot> SystemStats();
+        Task<ApiResponseData<SystemStats>> SystemStats();
     }
 
     public class ApiService : IApiService
@@ -141,94 +142,106 @@ namespace FauxSharp.Services
             _apiBaseService = apiBaseService;
         }
 
-       /// <inheritdoc />
-        public async Task<ApiResponseRoot> AliasUpdateUrlTables(IDictionary<string, string> arguments = null)
+        /// <inheritdoc />
+        public async Task<ApiResponseData<AliasUpdateUrlTables>> AliasUpdateUrlTables(IDictionary<string, string> arguments = null)
         {
-           return await _apiBaseService.ApiRequest("GET", ApiAction.AliasUpdateUrlTables, arguments:arguments);
+            var response = await _apiBaseService.ApiRequest("GET", ApiAction.AliasUpdateUrlTables, arguments: arguments);
+            return new ApiResponseData<AliasUpdateUrlTables>(response);
         }
 
-       /// <inheritdoc />
-        public async Task<ApiResponseRoot> ConfigBackup()
+        /// <inheritdoc />
+        public async Task<ApiResponseData<ConfigBackup>> ConfigBackup()
         {
-            return await _apiBaseService.ApiRequest("GET", ApiAction.ConfigBackup);
+            var response = await _apiBaseService.ApiRequest("GET", ApiAction.ConfigBackup);
+            return new ApiResponseData<ConfigBackup>(response);
         }
 
-       /// <inheritdoc />
-        public async Task<ApiResponseRoot> ConfigBackupList()
+        /// <inheritdoc />
+        public async Task<ApiResponseData<ConfigBackupList>> ConfigBackupList()
         {
-            return await _apiBaseService.ApiRequest("GET", ApiAction.ConfigBackupList);
+            var response = await _apiBaseService.ApiRequest("GET", ApiAction.ConfigBackupList);
+            return new ApiResponseData<ConfigBackupList>(response);
         }
 
-       /// <inheritdoc />
-        public async Task<ApiResponseRoot> ConfigGet(IDictionary<string, string> arguments = null)
+        /// <inheritdoc />
+        public async Task<ApiResponseData<ConfigGet>> ConfigGet(IDictionary<string, string> arguments = null)
         {
-            return await _apiBaseService.ApiRequest("GET", ApiAction.ConfigGet, arguments:arguments);
+            var response = await _apiBaseService.ApiRequest("GET", ApiAction.ConfigGet, arguments: arguments);
+            return new ApiResponseData<ConfigGet>(response);
         }
 
-       /// <inheritdoc />
-        public async Task<ApiResponseRoot> ConfigPatch(string bodyData = "[]", IDictionary<string, string> arguments = null)
+        /// <inheritdoc />
+        public async Task<ApiResponseData<ConfigPatch>> ConfigPatch(string bodyData = "[]", IDictionary<string, string> arguments = null)
         {
-            return await _apiBaseService.ApiRequest("POST", ApiAction.ConfigPatch, bodyData, arguments);
+            var response = await _apiBaseService.ApiRequest("POST", ApiAction.ConfigPatch, bodyData, arguments);
+            return new ApiResponseData<ConfigPatch>(response);
         }
 
-       /// <inheritdoc />
-        public async Task<ApiResponseRoot> ConfigReload()
+        /// <inheritdoc />
+        public async Task<ApiResponse> ConfigReload()
         {
             return await _apiBaseService.ApiRequest("GET", ApiAction.ConfigReload);
         }
 
-       /// <inheritdoc />
-        public async Task<ApiResponseRoot> ConfigRestore(IDictionary<string, string> arguments = null)
+        /// <inheritdoc />
+        public async Task<ApiResponseData<ConfigRestore>> ConfigRestore(IDictionary<string, string> arguments = null)
         {
-            return await _apiBaseService.ApiRequest("GET", ApiAction.ConfigRestore, arguments:arguments);
+            var response = await _apiBaseService.ApiRequest("GET", ApiAction.ConfigRestore, arguments: arguments);
+            return new ApiResponseData<ConfigRestore>(response);
         }
 
-       /// <inheritdoc />
-        public async Task<ApiResponseRoot> ConfigSet(string bodyData = "[]", IDictionary<string, string> arguments = null)
+        /// <inheritdoc />
+        public async Task<ApiResponseData<ConfigSet>> ConfigSet(string bodyData = "[]", IDictionary<string, string> arguments = null)
         {
-            return await _apiBaseService.ApiRequest("POST", ApiAction.ConfigSet, bodyData, arguments);
+            var response = await _apiBaseService.ApiRequest("POST", ApiAction.ConfigSet, bodyData, arguments);
+            return new ApiResponseData<ConfigSet>(response);
         }
 
-       /// <inheritdoc />
-        public async Task<ApiResponseRoot> FunctionCall(string bodyData)
+        /// <inheritdoc />
+        public async Task<ApiResponseData<FunctionCall>> FunctionCall(string bodyData)
         {
-            return await _apiBaseService.ApiRequest("POST", ApiAction.FunctionCall, bodyData);
+            var response = await _apiBaseService.ApiRequest("POST", ApiAction.FunctionCall, bodyData);
+            return new ApiResponseData<FunctionCall>(response);
         }
 
-       /// <inheritdoc />
-        public async Task<ApiResponseRoot> GatewayStatus()
+        /// <inheritdoc />
+        public async Task<ApiResponseData<GatewayStatus>> GatewayStatus()
         {
-            return await _apiBaseService.ApiRequest("GET", ApiAction.GatewayStatus);
+            var response = await _apiBaseService.ApiRequest("GET", ApiAction.GatewayStatus);
+            return new ApiResponseData<GatewayStatus>(response);
         }
 
-       /// <inheritdoc />
-        public async Task<ApiResponseRoot> InterfaceStats(IDictionary<string, string> arguments)
+        /// <inheritdoc />
+        public async Task<ApiResponseData<InterfaceStats>> InterfaceStats(IDictionary<string, string> arguments)
         {
-            return await _apiBaseService.ApiRequest("GET", ApiAction.InterfaceStats, arguments:arguments);
+            var response = await _apiBaseService.ApiRequest("GET", ApiAction.InterfaceStats, arguments: arguments);
+            return new ApiResponseData<InterfaceStats>(response);
         }
 
-       /// <inheritdoc />
-        public async Task<ApiResponseRoot> RuleGet(IDictionary<string, string> arguments = null)
+        /// <inheritdoc />
+        public async Task<ApiResponseData<RuleGet>> RuleGet(IDictionary<string, string> arguments = null)
         {
-            return await _apiBaseService.ApiRequest("GET", ApiAction.RuleGet, arguments:arguments);
+            var response = await _apiBaseService.ApiRequest("GET", ApiAction.RuleGet, arguments: arguments);
+            return new ApiResponseData<RuleGet>(response);
         }
 
-       /// <inheritdoc />
-        public async Task<ApiResponseRoot> SendEvent(string bodyData)
+        /// <inheritdoc />
+        public async Task<ApiResponse> SendEvent(string bodyData)
         {
             return await _apiBaseService.ApiRequest("POST", ApiAction.SendEvent, bodyData);
         }
 
-       /// <inheritdoc />
-        public async Task<ApiResponseRoot> SystemReboot()
+        /// <inheritdoc />
+        public async Task<ApiResponse> SystemReboot()
         {
             return await _apiBaseService.ApiRequest("GET", ApiAction.SystemReboot);
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponseRoot> SystemStats()
+        public async Task<ApiResponseData<SystemStats>> SystemStats()
         {
-            return await _apiBaseService.ApiRequest("GET", ApiAction.SystemStats);
+            var response = await _apiBaseService.ApiRequest("GET", ApiAction.SystemStats);
+            return new ApiResponseData<SystemStats>(response);
         }
     }
 }

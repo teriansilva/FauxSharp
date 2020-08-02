@@ -23,7 +23,7 @@ namespace FauxSharp.Services
         /// <param name="bodyData"></param>
         /// <param name="arguments"></param>
         /// <returns></returns>
-        Task<ApiResponseRoot> ApiRequest(string method, string apiAction, string bodyData = "", IDictionary<string, string> arguments = null);
+        Task<ApiResponse> ApiRequest(string method, string apiAction, string bodyData = "", IDictionary<string, string> arguments = null);
 
         /// <summary>
         /// Allows to update the base request configuration of the service
@@ -54,7 +54,7 @@ namespace FauxSharp.Services
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponseRoot> ApiRequest(string method, string apiAction, string bodyData = "", IDictionary<string, string> arguments = null)
+        public async Task<ApiResponse> ApiRequest(string method, string apiAction, string bodyData = "", IDictionary<string, string> arguments = null)
         {
 
             var handler = new HttpClientHandler()
@@ -86,9 +86,10 @@ namespace FauxSharp.Services
             }
 
             response.EnsureSuccessStatusCode();
+
             var resp = await response.Content.ReadAsStringAsync();
 
-            return JsonConvert.DeserializeObject<ApiResponseRoot>(resp);
+            return JsonConvert.DeserializeObject<ApiResponse>(resp);
         }
 
         #region Internal
@@ -146,4 +147,5 @@ namespace FauxSharp.Services
 
         #endregion
     }
+
 }
