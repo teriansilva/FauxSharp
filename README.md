@@ -2,7 +2,7 @@
 
 # FauxSharp
 
-FauxSharp is a simple C# SDK for communicating with FauxApi on PFSense
+FauxSharp is a simple C# SDK for communicating with [FauxApi](https://github.com/ndejong/pfsense_fauxapi) on PFSense
 
 ## Installation
 
