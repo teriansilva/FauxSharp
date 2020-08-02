@@ -1,4 +1,4 @@
-:warning: **This is still untested and in development**
+:warning: **This is still not entirely tested and under development, some things may not work**
 
 # FauxSharp
 
@@ -8,14 +8,24 @@ FauxSharp is a simple C# SDK for communicating with FauxApi on PFSense
 
 Use Nuget to install FauxApi Sdk.
 
-```bash
-Install-Package FauxApi
+```powershell
+Install-Package FauxApi (not yet published)
 ```
 
 ## Usage
-
+FauxSharp can be easily used with dependency injection in Asp.net core. Just setup the services like so:
 ```csharp
-TBD
+services.AddSingleton<IApiBaseService>(x => new ApiBaseService(new ClientBaseOptions("https://pfsense_fauxapi_host","apikey","apisecret",false,true)));
+services.AddSingleton<IApiService, ApiService>();
+```
+The ApiBaseService can also be created without the CLientBaseOptions and you can configure it later, see further down.
+You can then inject the service in your own services etc. and call it:
+```csharp
+await ApiService.SystemStats();
+```
+If you want to change / set the ClientBaseOptions outside of the service setup, just do this:
+```csharp
+await ApiBaseService.UpdateConfiguration(new ClientBaseOptions("https://pfsense_fauxapi_host2","apikey2","apisecret2",false,true));
 ```
 
 ## Contributing
