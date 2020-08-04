@@ -64,8 +64,7 @@ namespace FauxSharp.Services
 
             var client = new HttpClient(handler);
 
-            client.BaseAddress = new Uri("https://api.github.com");
-            client.DefaultRequestHeaders.Add("User-Agent", "Server");
+            client.DefaultRequestHeaders.Add("User-Agent", "FauxSharp Api");
             client.DefaultRequestHeaders.Add("fauxapi-auth", GenerateAuth());
 
             client.DefaultRequestHeaders.Accept.Add(
