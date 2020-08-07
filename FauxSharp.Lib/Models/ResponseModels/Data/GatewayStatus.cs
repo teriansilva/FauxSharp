@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace FauxSharp.Lib.Models.ResponseModels.Data
 {
@@ -28,11 +32,23 @@ namespace FauxSharp.Lib.Models.ResponseModels.Data
 
     }
 
+    public class GatewayInstance
+    {
+        
+        [JsonExtensionData]
+        private IDictionary<string, JToken> _additionalData;
+        [JsonIgnore]
+        public Gateway GatewayStatusData => JsonConvert.DeserializeObject<Gateway>(_additionalData.FirstOrDefault().Value.ToString());
+        [JsonIgnore]
+        public string GatewayIp => _additionalData.FirstOrDefault().Key;
+    }
+
     public class GatewayStatus
     {
-
         [JsonProperty("gateway_status")]
-        public Gateway Status { get; set; }
+
+        public GatewayInstance GatewayInstance { get; set; }
 
     }
+
 }

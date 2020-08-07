@@ -28,7 +28,7 @@ namespace FauxSharp.Lib.Models.ResponseModels.Data
         public string Inserted { get; set; }
 
         [JsonProperty("statecreations")]
-        public string Statecreations { get; set; }
+        public string StateCreations { get; set; }
 
     }
 
