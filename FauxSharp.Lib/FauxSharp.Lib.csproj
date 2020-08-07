@@ -10,9 +10,9 @@
 	<PackageDescription>FauxSharp is a simple CSharp client for communicating with FauxApi on PFSense</PackageDescription>
     <RepositoryUrl>https://github.com/teriansilva/FauxSharp</RepositoryUrl>
     <PackageProjectUrl>https://github.com/teriansilva/FauxSharp</PackageProjectUrl>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
-    <Version>1.1.0</Version>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
